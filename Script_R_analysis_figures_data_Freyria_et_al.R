@@ -5,13 +5,13 @@
 # and DESeq by Simon Anders
 
 # Libraries
-library(DESeq2)
-library(DESeq)
-library(vegan)
-library(gplots)
-library(ggplot2)
-library(pheatmap)
-library(UpSetR)
+library(DESeq2) # v.1.26.0
+library(DESeq) # v.1.38.0 
+library(vegan) # v.2.5-7
+library(gplots) # v.3.1.1
+library(ggplot2) # v.3.3.5
+library(pheatmap) # v.1.0.12
+library(UpSetR) # v.1.4.0
 
 
 ####### Create matrix DESEQ2 ####### 
