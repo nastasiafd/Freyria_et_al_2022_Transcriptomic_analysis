@@ -1,8 +1,13 @@
 # Transcriptomic_analysis
 
-Freyria_et_al_in_revision
+# Freyria_et_al_in_revision
 
-Scripts for "**Salinity tolerance and stress responses in an Arctic Pelagophyte revealed by comparative transcriptomic and gene expression analysis**" by **Nastasia J. Freyria, Alan Kuo, Mansi Chovatia, Jenifer Johnson, Anna Lipzen, Kerrie W. Barry, Igor V. Grigoriev and Connie Lovejoy**.
+Scripts for "**Salinity tolerance and stress responses in an Arctic Pelagophyte revealed by comparative transcriptomic and gene expression analysis**" 
+by **Nastasia J. Freyria, Alan Kuo, Mansi Chovatia, Jenifer Johnson, Anna Lipzen, Kerrie W. Barry, Igor V. Grigoriev and Connie Lovejoy**.
+
+All transcriptome samples are in the DOE JGI Genome Portal under Sequencing Project ID 1253386 and Analysis Project ID 123385, from the Sequence Read Archive (SRP284677-SRP284681). CCMP 2097 reference genome and the annotated genome are available at JGI Genome Portal and PhycoCosm Portal under JGI Project ID 1020062.
+
+Transcriptomes sequences analysis
 
 R analyses and R figures were run using the master script "**Script_R_analysis_figures_data_Freyria_et_al.R**" in the Scripts folder.
 
