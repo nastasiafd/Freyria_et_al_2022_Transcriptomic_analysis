@@ -9,9 +9,16 @@ All transcriptome samples are in the DOE JGI Genome Portal under Sequencing Proj
 
 ### Pipeline steps
 1. Quality control of raw sequences
-2. Trimmomatic
+- 
+ 
+2. Trimmomatic/0.36
+```
+java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.36.jar PE -threads 8 -phred33 ../R1.fastq.gz ../R2.fastq.gz R1.paired.fastq.gz R1.unpaired.fastq.gz R2.paired.fastq.gz R2.unpaired.fastq.gz ILLUMINACLIP:trimmomatic/0.36/adapters/TruSeq2-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:5:20 MINLEN:100
+```
 3. Mapping against genome reference
+
 4. FeatureCounts
+
 5. Differential gene expression analysis
 
 - R analyses and R figures were run using the master script "**Script_R_analysis_figures_data_Freyria_et_al.R**" in the Scripts folder.
