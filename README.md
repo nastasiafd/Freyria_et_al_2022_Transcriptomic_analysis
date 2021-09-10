@@ -25,12 +25,18 @@ STAR --runMode genomeGenerate --genomeDir /Genome_directory/ --genomeFastaFiles 
 STAR --genomeDir /Genome_directory/ --readFilesIn /Trimmomatic/R1_paired.fq.gz /Trimmomatic/R2_paired.fq.gz --runThreadN 8 --readFilesCommand zcat --outFileNamePrefix Star_results/Star_mapp_ --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard --quantMode GeneCounts --outReadsUnmapped Fastx --sjdbGTFfile /Genome_directory/Pelago2097_1_GeneCatalog_20160408.gtf
 ```
 4. FeatureCounts
-
+```
+featureCounts -T 4  -a /Genome_directory/Pelago2097_1_GeneCatalog_20160408.gtf -o Results_featureCounts_matrix/featurecounts.txt *.out.bam >  Results_featureCounts_matrix/featurecounts_screen_output.log
+```
 5. Differential gene expression analysis
-
-- R analyses and R figures were run using the master script "**Script_R_analysis_figures_data_Freyria_et_al.R**" in the Scripts folder.
+- R analyses and R figures were run using the master script "**Script_R_analysis_figures_data_Freyria_et_al.R**" in the folder.
 - Figures 4c, 4d, 5a and 6a were made using EXCEL/16.52
 - Figures 5b and 5c were made using POWERPOINT/16.52
 - Figure 6b was made using MUSCLE/3.8.1551 and RAXML/8.2.11 with the following command:
-  - muscle -in file.fa -out file_muscle.fa
-  - raxmlHPC-HYBRID-AVX2 -f a -#1000 -m PROTGAMMAGTR -p 12345 -x 12345 -s file_muscle.fa -n file_muscle.fa_PROTGAMMAGTR.tree
+````
+# Alignment using MUSCLE
+muscle -in file.fa -out file_muscle.fa
+
+# Tree was constructed using RAXML
+raxmlHPC-HYBRID-AVX2 -f a -#1000 -m PROTGAMMAGTR -p 12345 -x 12345 -s file_muscle.fa -n file_muscle.fa_PROTGAMMAGTR.tree
+```
