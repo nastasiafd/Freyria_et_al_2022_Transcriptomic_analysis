@@ -8,15 +8,22 @@ All transcriptome samples are in the DOE JGI Genome Portal under Sequencing Proj
 ## Transcriptomic analysis
 
 ### Pipeline steps
-1. Quality control of raw sequences
-- 
- 
+1. Quality control of clean sequences (available on DOE JGI Genome Portal) using FastQC/0.11.9
+```
+zcat *fastq.gz | fastqc stdin
+```
 2. Trimmomatic/0.36
 ```
 java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.36.jar PE -threads 8 -phred33 ../R1.fastq.gz ../R2.fastq.gz R1.paired.fastq.gz R1.unpaired.fastq.gz R2.paired.fastq.gz R2.unpaired.fastq.gz ILLUMINACLIP:trimmomatic/0.36/adapters/TruSeq2-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:5:20 MINLEN:100
 ```
-3. Mapping against genome reference
+3. Mapping against genome reference using STAR/2.6.1a
+```
+# STAR index
+STAR --runMode genomeGenerate --genomeDir /Genome_directory/ --genomeFastaFiles /Genome_directory/Pelago2097_1_AssemblyScaffolds_Repeatmasked.fasta --runThreadN 24 --sjdbGTFfile /Genome_directory/Pelago2097_1_GeneCatalog_20160408.gff3 --sjdbOverhang 99 --sjdbGTFtagExonParentTranscript Parent
 
+# Mapping
+STAR --genomeDir /Genome_directory/ --readFilesIn /Trimmomatic/R1_paired.fq.gz /Trimmomatic/R2_paired.fq.gz --runThreadN 8 --readFilesCommand zcat --outFileNamePrefix Star_results/Star_mapp_ --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard --quantMode GeneCounts --outReadsUnmapped Fastx --sjdbGTFfile /Genome_directory/Pelago2097_1_GeneCatalog_20160408.gtf
+```
 4. FeatureCounts
 
 5. Differential gene expression analysis
