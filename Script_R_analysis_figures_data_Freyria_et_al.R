@@ -12,6 +12,7 @@ library(gplots) # v.3.1.1
 library(ggplot2) # v.3.3.5
 library(pheatmap) # v.1.0.12
 library(UpSetR) # v.1.4.0
+library(WGCNA) # v.1.70-3
 
 
 ####### Create matrix DESEQ2 ####### 
@@ -407,3 +408,139 @@ anova(ophio_ca, perm=999)
 
 # Plot CA
 plot(ophio_ca, type="p")
+
+#############################################################################################################################################################
+#---------------- Weighted Gene Co-expression Network Analysy (WGCNA)
+#---------------- Supplementary Fig. S5
+#############################################################################################################################################################
+
+## script for WGCNA based on WGCNA tutorial by Peter Langfelder and Steve Horvath
+## https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/
+
+# read your table
+Transcrip_all_counts = read.table("all_transcriptomes_featurecounts.txt", row.names = 1, header = T)
+
+# create a table with information about each sample 
+design <- data.frame(design = names(expression_df)[3:ncol(expression_df)]) %>%
+  separate(col = design, sep = "_", 
+           into = c("time", "salinity", "S.45", "S.35", "S.25", "S.16", "S.8"))
+
+# add the information into the table 
+design$time <- factor(design$time, levels = c("0", "1", "2", "3", "4"))
+design$salinity <- factor(design$salinity, levels = c("45", "35", "25", "16", "8"))
+design$S.45 <- factor(design$salinity, levels = c("45"))
+design$S.35 <- factor(design$salinity, levels = c("35"))
+design$S.25 <- factor(design$salinity, levels = c("25"))
+design$S.16 <- factor(design$salinity, levels = c("16"))
+design$S.8 <- factor(design$salinity, levels = c("8"))
+
+# Create a countDataSet
+dds <- DESeqDataSetFromMatrix(countData = expression_df[,-c(1,2)], 
+                              colData = design, design = salinity ~ time)
+
+# Estimate normalization factors
+dds <- estimateSizeFactors(dds)
+
+# Table with count values (normalization)
+datExpr <- counts(dds, normalized = T)
+
+# Run this to check if there are gene outliers
+gsg = goodSamplesGenes(datExpr, verbose = 3)
+gsg$allOK 
+
+# transpose table 
+datExpr = as.data.frame(t(datExpr))
+
+# Create an object called "datTraits" that contains your trait data
+datTraits = read.table("metadata.txt", h=T)
+
+# form a data frame analogous to expression data that will hold the traits
+rownames(datTraits) = datTraits$sample_id
+datTraits$sample_id = NULL
+table(rownames(datTraits)==rownames(datExpr)) 
+
+# Cluster samples by expression this calculates the whole network connectivity
+A = adjacency(t(datExpr),type="unsigned") 
+
+# standardized connectivity
+k = as.numeric(apply(A,2,sum))-1 
+Z.k = scale(k)
+thresholdZ.k = -2.5 
+outlierColor = ifelse(Z.k<thresholdZ.k,"red","black")
+sampleTree = flashClust(as.dist(1-A), method = "average")
+
+# Convert traits to a color representation where red indicates high values
+traitColors = data.frame(numbers2colors(datTraits,signed=FALSE))
+dimnames(traitColors)[[2]] = paste(names(datTraits))
+datColors = data.frame(outlier = outlierColor,traitColors)
+
+enableWGCNAThreads()
+
+## softPower has been choose from tutorial with n samples = 28
+softPower = 16
+
+#specify network type
+adjacency = adjacency(datExpr, power = softPower, type = "signed") 
+
+#translate the adjacency into topological overlap matrix and calculate the corresponding dissimilarity:
+TOM = TOMsimilarity(adjacency, TOMType="signed")
+dissTOM = 1-TOM
+
+# Generate a clustered gene tree
+geneTree = flashClust(as.dist(dissTOM), method="average")
+
+# minimum number of genes to cluster into a module
+minModuleSize = 50 
+
+dynamicMods = cutreeDynamic(dendro= geneTree, distM= dissTOM, deepSplit=2, 
+                            pamRespectsDendro= FALSE, minClusterSize = minModuleSize)
+dynamicColors= labels2colors(dynamicMods)
+
+MEList= moduleEigengenes(datExpr, colors= dynamicColors,softPower = 16)
+MEs= MEList$eigengenes
+MEDiss= 1-cor(MEs)
+METree= flashClust(as.dist(MEDiss), method= "average")
+
+# plot tree showing how the eigengenes cluster together
+plot(METree, main= "Clustering of module eigengenes", xlab= "", sub= "")
+
+# set a threhold for merging modules
+MEDissThres = 0.0
+merge = mergeCloseModules(datExpr, dynamicColors, cutHeight= MEDissThres, verbose =3)
+
+mergedColors = merge$colors
+mergedMEs = merge$newMEs
+
+# plot tree showing clustering of all genes with assigned modules colors
+plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors), 
+                    c("Dynamic Tree Cut", "Merged dynamic"), dendroLabels= FALSE, 
+                    hang=0.03, addGuide= TRUE, guideHang=0.05)
+
+moduleColors = mergedColors
+colorOrder = c("grey", standardColors(50))
+moduleLabels = match(moduleColors, colorOrder)-1
+MEs = mergedMEs
+
+# Define number of genes and samples
+nGenes = ncol(datExpr)
+nSamples = nrow(datExpr)
+
+# Recalculate MEs with color labels
+MEs0 = moduleEigengenes(datExpr, moduleColors)$eigengenes
+MEs = orderMEs(MEs0)
+moduleTraitCor = cor(MEs, datTraits, use= "p")
+moduleTraitPvalue = corPvalueStudent(moduleTraitCor, nSamples)
+
+# Print correlation heatmap between modules and traits
+textMatrix= paste(signif(moduleTraitCor, 2), "\n(", 
+                  signif(moduleTraitPvalue, 1), ")", sep= "")
+dim(textMatrix)= dim(moduleTraitCor)
+
+# display the correlation values with a heatmap plot
+labeledHeatmap(Matrix= moduleTraitCor, 
+               xLabels= names(datTraits), 
+               yLabels= names(MEs), 
+               ySymbols= names(MEs), 
+               colors= blueWhiteRed(50), 
+               textMatrix= textMatrix, 
+               main= paste("Module-trait relationships"))
