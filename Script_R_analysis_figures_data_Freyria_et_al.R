@@ -372,43 +372,6 @@ ggplot(kog_path_class, aes(x=UP_DOWN, y=KOG_pathways_class, color=UP_DOWN)) +
   scale_y_discrete(limits = rev(levels(kog_path_class$KOG_pathways_class))) +
   scale_color_manual(values = c("firebrick3", "turquoise3"))
 
-
-
-####### Canonical Analysis (CA) --> Figure 6c ####### 
-
-# Read file of ice binding protein count in all samples
-IBP_read = read.table("IBP_count.txt", row.names = 1, header=T)
-
-# FILTER -- delete sample with 0 values 
-Ophio_read = subset(Ophio_read, rowSums(Ophio_read)!=0)
-
-# transpose
-Ophio_read_t <- t(Ophio_read)
-
-# metadata 
-env = read.csv("Reads_per_gene/variables_reads.csv", row.names = 1, check.names = F)
-
-# Verify if labels are ordered
-env$Description == rownames(Ophio_read_t)
-
-# If not ordered it
-env<-env[rownames(Ophio_read_t),]
-
-# Verify again
-env$Description == rownames(Ophio_read_t)
-
-# Standardize data
-Ophio_read.hel = decostand(Ophio_read_t, method = "hellinger")
-
-# Calcultate CA
-ophio_ca = cca(Ophio_read.hel, dist="bray")
-
-# ANOVA test
-anova(ophio_ca, perm=999)
-
-# Plot CA
-plot(ophio_ca, type="p")
-
 #############################################################################################################################################################
 #---------------- Weighted Gene Co-expression Network Analysy (WGCNA)
 #---------------- Supplementary Fig. S5
