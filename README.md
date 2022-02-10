@@ -32,9 +32,9 @@ featureCounts -T 4  -a /Genome_directory/Pelago2097_1_GeneCatalog_20160408.gtf -
 ```
 5. Differential gene expression analysis
 - R analyses and R figures were run using the master script "**Script_R_analysis_figures_data_Freyria_et_al.R**" in the folder.
-- Figures 4c, 4d, 5a and 6a were made using EXCEL/16.52
-- Figures 5b and 5c were made using POWERPOINT/16.52
-- Figure 6b was made using MUSCLE/3.8.1551 and RAXML/8.2.11 with the following command:
+- Figures 4c, 4d, 5, 6a and 7a and 7b were made using EXCEL/16.52
+- Figures 6b and 6c were made using POWERPOINT/16.52
+- Figure 7c was made using MUSCLE/3.8.1551 and RAXML/8.2.11 with the following command:
 ````
 # Alignment using MUSCLE
 muscle -in file.fa -out file_muscle.fa
