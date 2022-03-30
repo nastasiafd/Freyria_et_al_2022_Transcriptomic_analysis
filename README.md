@@ -1,4 +1,4 @@
-# Freyria_et_al_in_revision
+# Freyria et al., 2022 - Communications Biology
 
 Scripts for "**Salinity tolerance and stress responses in an Arctic Pelagophyte revealed by comparative transcriptomic and gene expression analysis**" 
 by **Nastasia J. Freyria, Alan Kuo, Mansi Chovatia, Jenifer Johnson, Anna Lipzen, Kerrie W. Barry, Igor V. Grigoriev and Connie Lovejoy**.
