@@ -1,4 +1,4 @@
-######### Scripts for "Salinity tolerance and stress responses in an Arctic Pelagophyte revealed by comparative transcriptomic and gene expression analysis" 
+######### Scripts for "Salinity tolerance mechanisms of an Arctic Pelagophyte using comparative transcriptomic and gene expression analysis" 
 ######### by Nastasia J. Freyria, Alan Kuo, Mansi Chovatia, Jenifer Johnson, Anna Lipzen, Kerrie W. Barry, Igor V. Grigoriev and Connie Lovejoy.
 
 # Computer code is following methods from packages DESeq2 by Michael I. Love, Simon Anders, and Wolfgang Huber
