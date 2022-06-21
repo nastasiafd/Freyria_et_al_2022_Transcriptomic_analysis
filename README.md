@@ -3,7 +3,7 @@
 Scripts for "**Salinity tolerance mechanisms of an Arctic Pelagophyte using comparative transcriptomic and gene expression analysis**" 
 by **Nastasia J. Freyria, Alan Kuo, Mansi Chovatia, Jenifer Johnson, Anna Lipzen, Kerrie W. Barry, Igor V. Grigoriev and Connie Lovejoy**.
 
-DOI: 
+DOI: https://doi.org/10.1038/s42003-022-03461-2
 
 All transcriptome samples are in the DOE JGI Genome Portal under Sequencing Project ID 1253386 and Analysis Project ID 123385, from the Sequence Read Archive (SRP284677-SRP284681). CCMP 2097 reference genome and the annotated genome are available at JGI Genome Portal and PhycoCosm Portal under JGI Project ID 1020062.
 
